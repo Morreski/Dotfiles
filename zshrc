@@ -26,3 +26,4 @@ alias gpg="gpg2"
 alias onditpascrypter="python3 -c 'import sys; import bcrypt; pwd=input(); sys.stdout.write(bcrypt.hashpw(pwd.encode(), bcrypt.gensalt()).decode())'"
 alias minivim='vim -u NONE'
 alias toqrcode='xargs -0 | qrencode -o - | display'
+alias dev='tmux attach -t $(basename $PWD) || tmux new -s $(basename $PWD)'
