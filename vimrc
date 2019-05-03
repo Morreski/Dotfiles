@@ -12,6 +12,7 @@ filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.fzf
 call vundle#rc()
 "
 " " let Vundle manage Vundle, required
@@ -27,6 +28,10 @@ Bundle 'digitaltoad/vim-jade'
 Bundle 'pangloss/vim-javascript'
 Bundle 'leafgarland/typescript-vim'
 Bundle 'terryma/vim-multiple-cursors'
+Bundle 'ambv/black'
+
+" Coloration
+Bundle 'morhetz/gruvbox'
 
 " Utilities
 "Bundle 'kien/ctrlp.vim'
@@ -35,13 +40,11 @@ Bundle 'tomtom/tcomment_vim'
 
 " Git integration
 Bundle 'tpope/vim-fugitive'
-
-" Syntax highlight coloration
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'tomasr/molokai'
+Bundle 'airblade/vim-gitgutter'
 
 " Syntax checker
 Bundle 'scrooloose/syntastic'
+Bundle 'prettier/vim-prettier'
 
 " Completion
 Bundle 'Shougo/neocomplcache.vim'
@@ -63,8 +66,8 @@ set viminfo='20,\"500,h
 set backspace=indent,eol,start
 
 " mapleader
-let mapleader = "!"
-let g:mapleader = "!"
+let mapleader = " "
+let g:mapleader = " "
 
 " Recharger et éditer le .vimrc
 nmap <leader>s :source ~/.vimrc<cr>
@@ -81,7 +84,6 @@ set showcmd         " affiche les commandes incomplètes
 set wildmenu        " Menu pour la complétion des commandes
 set wildmode=list:longest
 set wildignore=*.o,*.bak,*.pyc,*.swp,*.jpg,*.gif,*.png
-set cc=80 " Colonne a 80 caractères
 
 " Silence !
 set noerrorbells
@@ -110,9 +112,7 @@ filetype plugin indent on
 
 set t_Co=256        " 256 couleurs inside (marche avec gnome-terminal debian)
 
-let g:solarized_termcolors=256
-set background=dark
-colorscheme molokai
+colorscheme gruvbox
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Indentation - Gestion des tabs/espaces
@@ -132,12 +132,12 @@ set shiftround      " Les tabs sont toujours multiples de shiftwidth (<<, >>)
 
 
 " filetype plugin indent on
-
+autocmd BufNewFile,BufRead *.ts set filetype=typescript
 autocmd FileType c set expandtab tabstop=4 shiftwidth=4
 
 autocmd FileType python,py set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
-autocmd FileType javascript,js set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
-autocmd FileType yaml,yml set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
+autocmd FileType javascript,js,typescript,ts set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
+autocmd FileType yaml,yml set tabstop=1|set softtabstop=2|set shiftwidth=2|set expandtab
 
 autocmd FileType html,xhtml,xml,css,mako,smarty setl tabstop=2|setl softtabstop=2|setl shiftwidth=2
 
@@ -208,12 +208,7 @@ endif
 nmap <Left> <<
 nmap <Right> >>
 
-" Parce que des fois Escape se trouve loin des doigts...
-nnoremap <silent> œ  :silent noh<CR>
-nnoremap <silent> ²  :silent noh<CR>
-inoremap <silent> œ  <esc>
-inoremap <silent> ²  <esc>
-
+nnoremap <silent> 1 :noh <cr>
 " Navigation en mode insertion
 inoremap <C-e> <C-o>$
 inoremap <C-a> <C-o>0
@@ -237,6 +232,11 @@ noremap <C-Left> 5<C-w>-
 " Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Black
+
+let g:black_fast=1
+:au BufWritePre *.py :Black
+
 " neocomplcache
 
 let g:neocomplcache_enable_at_startup = 1
@@ -259,6 +259,11 @@ let g:syntastic_auto_loc_list = 2
 
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_warning_symbol = "⚠"
+
+" prettier
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.ts Prettier
+autocmd BufWritePre *.html Prettier
 
 nmap <C-e> :lopen <cr>
 
@@ -284,3 +289,58 @@ endfunction
 
 let g:multi_cursor_exit_from_insert_mode=0
 let g:multi_cursor_quit_key='q'
+
+" Ansible vault
+command Decrypt execute ":!ansible-vault decrypt %"
+command Encrypt execute ":!ansible-vault encrypt %"
+
+" Écrire le fichier dans le clipboard
+
+command ToClip execute ":w ! xclip -selection c"
+command VToClip execute ":'<,'>w ! xclip -selection c"
+
+" Editer du binaire
+
+command Hex execute ":%!xxd"
+command Bin execute ":%!xxd -r"
+
+" Look & Feel
+
+" Parce que des fois y'a du soleil
+command SetHighlight execute "hi CursorLine term=bold ctermbg=None cterm=bold | hi CursorLineNR term=bold cterm=bold ctermbg=None ctermfg=darkred"
+command Light execute "set background=light | hi Normal ctermbg=None | SetHighlight"
+
+" Et que des fois, y'en a pas
+command Dark execute "set background=dark | hi Normal ctermbg=None | SetHighlight"
+
+" Et que souvent, y'en a pas
+Dark
+
+" Browser
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 18
+let g:NetrwIsOpen=0
+
+function! ToggleNetrw()
+    if g:NetrwIsOpen
+        let i = bufnr("$")
+        while (i >= 1)
+            if (getbufvar(i, "&filetype") == "netrw")
+                silent exe "bwipeout " . i
+            endif
+            let i-=1
+        endwhile
+        let g:NetrwIsOpen=0
+    else
+        let g:NetrwIsOpen=1
+        silent Vexplore
+    endif
+endfunction
+
+noremap <leader><Space> :call ToggleNetrw()<CR>
+
+" Trigger changes every X ms
+set updatetime=100
