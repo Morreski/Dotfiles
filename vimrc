@@ -13,45 +13,46 @@ filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=~/.fzf
+set rtp+=~/.vim/bundle/black/plugin/black.vim
 call vundle#rc()
 "
 " " let Vundle manage Vundle, required
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
 filetype plugin indent on " required
 
 " Language specific plugins
-Bundle 'derekwyatt/vim-scala'
-Bundle 'ekalinin/Dockerfile.vim'
-Bundle 'rust-lang/rust.vim'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'pangloss/vim-javascript'
-Bundle 'leafgarland/typescript-vim'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'ambv/black'
+Plugin 'derekwyatt/vim-scala'
+Plugin 'ekalinin/Dockerfile.vim'
+Plugin 'rust-lang/rust.vim'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'pangloss/vim-javascript'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'python/black'
 
 " Coloration
-Bundle 'morhetz/gruvbox'
+Plugin 'morhetz/gruvbox'
 
 " Utilities
-"Bundle 'kien/ctrlp.vim'
-Bundle 'tpope/vim-surround'
-Bundle 'tomtom/tcomment_vim'
+"Plugin 'kien/ctrlp.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'tomtom/tcomment_vim'
 
 " Git integration
-Bundle 'tpope/vim-fugitive'
-Bundle 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
 
 " Syntax checker
-Bundle 'scrooloose/syntastic'
-Bundle 'prettier/vim-prettier'
+Plugin 'scrooloose/syntastic'
+Plugin 'prettier/vim-prettier'
 
 " Completion
-Bundle 'Shougo/neocomplcache.vim'
-Bundle 'SirVer/ultisnips'
+Plugin 'Shougo/neocomplcache.vim'
+Plugin 'SirVer/ultisnips'
 
 " Recherche
-Bundle 'junegunn/fzf.vim'
+Plugin 'junegunn/fzf.vim'
 
 
 """""" END VUNDLE
@@ -84,6 +85,7 @@ set showcmd         " affiche les commandes incomplètes
 set wildmenu        " Menu pour la complétion des commandes
 set wildmode=list:longest
 set wildignore=*.o,*.bak,*.pyc,*.swp,*.jpg,*.gif,*.png
+" set cc=88 " Colonne a 80 caractères
 
 " Silence !
 set noerrorbells
@@ -135,7 +137,7 @@ set shiftround      " Les tabs sont toujours multiples de shiftwidth (<<, >>)
 autocmd BufNewFile,BufRead *.ts set filetype=typescript
 autocmd FileType c set expandtab tabstop=4 shiftwidth=4
 
-autocmd FileType python,py set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
+autocmd FileType python,py set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab|setlocal indentkeys-=<:>
 autocmd FileType javascript,js,typescript,ts set tabstop=1|set softtabstop=4|set shiftwidth=4|set expandtab
 autocmd FileType yaml,yml set tabstop=1|set softtabstop=2|set shiftwidth=2|set expandtab
 
@@ -143,6 +145,7 @@ autocmd FileType html,xhtml,xml,css,mako,smarty setl tabstop=2|setl softtabstop=
 
 " Supprime automatiquement les espaces de fin de ligne
 autocmd BufWritePre * :%s/\s\+$//e
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Édition
@@ -190,8 +193,8 @@ set hidden
 nmap ; :Buffers!<CR>
 
 " Naviguer entre les buffers avec TAB
-map <S-Tab> :bprevious!<CR>
-map <Tab> :bnext!<CR>
+nmap <S-Tab> :bprevious!<CR>
+nmap <Tab> :bnext!<CR>
 
 set directory=~/.vim/swap
 
@@ -234,7 +237,7 @@ noremap <C-Left> 5<C-w>-
 
 " Black
 
-let g:black_fast=1
+let g:black_fast=0
 :au BufWritePre *.py :Black
 
 " neocomplcache
@@ -271,6 +274,9 @@ nmap <C-e> :lopen <cr>
 
 let g:UltiSnipsExpandTrigger = '<S-Tab>'
 let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsListSnippets='<c-tab>'
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/morreski_snippets']
+let g:UltiSnipsJumpForwardTrigger='<Tab>'
 
 " vim-multiple-cursors
 
