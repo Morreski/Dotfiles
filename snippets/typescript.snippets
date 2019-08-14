@@ -1,0 +1,32 @@
+snippet dto
+export namespace $1 {
+    export class $2Dto {
+        @ApiModelProperty({ example: $3 })
+        readonly $4: $5;
+
+        static validator = {
+            $4: Joi.$5,
+        };
+    }
+}
+endsnippet
+
+
+snippet controller
+@ApiResponse({
+    status: 200,
+    description: '$1',
+})
+@UseGuards(AuthGuard('jwt'))
+@${2:Post}('/$3')
+async $4(
+    @${5:Body}(new JoiValidationPipe($6.$5Dto.validator)) body: $6.$5Dto
+) {
+    const event = new MementoEvent('$7', body);
+    const responseStream = await this.eventManager.publish($8, event, 'request');
+    return responseStream.pipe(
+        filter(evt => evt.metadata.event_name === '$7.result'),
+        map(evt => evt.payload),
+    );
+}
+endsnippet
