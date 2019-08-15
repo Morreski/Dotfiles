@@ -1,0 +1,67 @@
+# General Python
+
+snippet def
+def $1($2) -> ${3:None}:
+    $4
+endsnippet
+
+snippet dataclass
+@dataclasses.dataclass
+class $1:
+    $2
+endsnippet
+
+# Memento
+
+snippet yieldevent
+yield Event(
+    "$1",
+    {$2}
+)
+endsnippet
+
+snippet yielderror
+yield Error(
+    EventErrorType.$1,
+    "$2"
+    {"key": $3}
+)
+endsnippet
+
+snippet event_handler
+from typing import Generator, Union
+
+from memento.events import event_handler, Event, Error
+
+
+@event_handler
+def $1($2) -> Generator[Union[Event, Error], None, None]:
+    $3
+endsnippet
+
+snippet importmodel
+from memento.database.models import $1
+endsnippet
+
+snippet importcore
+from memento.database.connections import core_db
+endsnippet
+
+snippet importdeco
+from memento.utils.decorators import $1
+endsnippet
+
+snippet importcontroller
+from memento.controllers import $1
+endsnippet
+
+snippet mmtquery
+$1 = (
+    core_db.session.query($2)
+    .filter(
+        ${3:$2.id == $4}
+    )
+    ${5:.all()}
+)
+endsnippet
+

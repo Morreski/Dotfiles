@@ -1,0 +1,46 @@
+snippet eh_request
+- name: $1
+  callable_with:
+    name: $2
+    schema:
+      type: object
+      required:
+        - $3
+      properties:
+        $3:
+          type: $4
+
+  fired_events:
+    - name: $2.result
+      result_stream_only: true
+      schema:
+        type: object
+        required:
+          - $5
+        properties:
+          $5:
+            type: $6
+endsnippet
+
+snippet eh_broadcast
+- name: $1
+  triggered_by:
+    name: $2/$3
+    schema:
+      type: object
+      required:
+        - $4
+      properties:
+        $4:
+          type: $5
+
+  fired_events:
+    - name: ${6:$2}/${7:$3.done}
+      schema:
+        type: object
+        required:
+          - $8
+        properties:
+          $8:
+            type: $9
+endsnippet
