@@ -1,0 +1,40 @@
+#!/bin/bash
+
+usage() {
+    cat << EOF
+usage: $0 [WORKSPACE_NAME]
+EOF
+}
+
+CWD=$(basename $PWD)
+WORKSPACE_NAME=${1:-$CWD}
+
+tmux new -s $WORKSPACE_NAME -d
+
+
+# COMMAND CENTER
+# -- Layout
+tmux rename-window -t $WORKSPACE_NAME:0 command_center
+tmux split-window -v
+tmux select-pane -t 0
+tmux split-window -h
+tmux resize-pane -U 15
+tmux select-pane -t 2
+tmux split-window -h
+tmux select-pane -t 3
+tmux split-window -v
+
+# -- htop
+tmux select-pane -t 1
+tmux send-keys "htop" Enter
+
+# -- nload
+tmux select-pane -t 0
+tmux send-keys "nload" Enter
+
+# -- docker statuses
+tmux select-pane -t 2
+tmux send-keys 'watch "docker ps -q | xargs docker inspect --format \"{{.Id}} {{ .Name }} {{index .NetworkSettings.Networks \\\"dev-net\\\" \\\"IPAddress\\\"}} {{.State.Status}}\""' Enter
+
+tmux select-window -t $WORKSPACE_NAME:0
+tmux attach -t $WORKSPACE_NAME
