@@ -9,6 +9,9 @@ EOF
 CWD=$(basename $PWD)
 WORKSPACE_NAME=${1:-$CWD}
 
+set -e
+set +x
+
 tmux new -s $WORKSPACE_NAME -d
 
 
@@ -34,7 +37,7 @@ tmux send-keys "nload" Enter
 
 # -- docker statuses
 tmux select-pane -t 2
-tmux send-keys 'watch "docker ps -q | xargs docker inspect --format \"{{.Id}} {{ .Name }} {{index .NetworkSettings.Networks \\\"dev-net\\\" \\\"IPAddress\\\"}} {{.State.Status}}\""' Enter
+tmux send-keys 'watch "docker ps -q | xargs docker inspect --format \"{{.Id}} {{ .Name }} {{index .NetworkSettings.Networks \\\"dev-net\\\" \\\"IPAddress\\\"}} {{.State.Status}}\" | sed \"s@^\\([a-Z0-9]\\{8\\}\\)[a-z0-9]* /\\(.*\\)@\\\\1 \\\\2@g\""' Enter
 
 tmux select-window -t $WORKSPACE_NAME:0
 tmux attach -t $WORKSPACE_NAME
