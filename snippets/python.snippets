@@ -65,3 +65,18 @@ $1 = (
 )
 endsnippet
 
+snippet checkperm
+PermissionsController.assert_user_has_permissions(
+    "${1:action}", ${2:event_context.user}, ((${3:orga_unit}, ["${4:PERMISSION_NAME}"]),)
+)
+endsnippet
+
+snippet event
+@dataclass
+class $1Event(Event):
+    def __init__(self):
+        super().__init__(
+            "$2/$3",
+            {},
+        )
+endsnippet

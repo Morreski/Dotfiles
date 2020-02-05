@@ -1,0 +1,83 @@
+snippet id
+id SERIAL NOT NULL PRIMARY KEY,
+endsnippet
+
+snippet fk
+$1_id integer NOT NULL REFERENCES mmt_$1 NOT DEFERRABLE INITIALLY IMMEDIATE,
+endsnippet
+
+snippet setupdatedat
+CREATE TRIGGER mmt_$1_b_u_trg
+    BEFORE UPDATE ON mmt_$1
+    FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
+endsnippet
+
+snippet event
+CREATE TABLE mmt_$1_event_type_enum (
+    id BIGINT NOT NULL PRIMARY KEY,
+    label TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL
+);
+
+CREATE TRIGGER mmt_$1_event_type_enum_b_i_trg
+    BEFORE INSERT ON mmt_$1_event_type_enum
+    FOR EACH ROW EXECUTE PROCEDURE set_enum_id();
+
+CREATE TRIGGER mmt_$1_event_type_enum_b_u_trg
+    BEFORE UPDATE ON mmt_$1_event_type_enum
+    FOR EACH ROW EXECUTE PROCEDURE prevent_enum_update();
+
+CREATE TABLE public.mmt_$1_event (
+    id SERIAL NOT NULL PRIMARY KEY,
+    $1_id int NOT NULL REFERENCES public.mmt_$1 (id) NOT DEFERRABLE INITIALLY IMMEDIATE,
+    event_type_id bigint NOT NULL REFERENCES public.mmt_$1_event_type_enum (id) NOT DEFERRABLE INITIALLY IMMEDIATE,
+    data json NOT NULL DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE default NOW() NOT NULL
+);
+
+CREATE TRIGGER mmt_$1_event_b_u_trg
+     BEFORE UPDATE OR DELETE
+     ON public.mmt_$1_event
+     FOR EACH ROW
+     EXECUTE PROCEDURE row_is_not_editable();
+
+CREATE INDEX ON public.mmt_$1_event ($1_id);
+CREATE INDEX ON public.mmt_$1_event ($1_id, event_type_id);
+endsnippet
+
+snippet newpermission
+INSERT INTO mmt_permission (id, name, description) VALUES ($1, '$2', '$3');
+endsnippet
+
+snippet newsetting
+UPDATE mmt_orga_unit SET settings = '{"$1": $2}' || settings WHERE id = 1;
+endsnippet
+
+snippet table
+CREATE TABLE mmt_$1 (
+    id SERIAL NOT NULL PRIMARY KEY,
+    $2
+    created_at TIMESTAMP WITH TIME ZONE default NOW() NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+);
+
+CREATE TRIGGER mmt_$1_b_u_trg
+    BEFORE UPDATE ON mmt_$1
+    FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
+endsnippet
+
+snippet enum
+CREATE TABLE mmt_$1_enum (
+    id BIGINT NOT NULL PRIMARY KEY,
+    label TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL
+);
+
+CREATE TRIGGER mmt_$1_enum_b_i_trg
+    BEFORE INSERT ON mmt_$1_enum
+    FOR EACH ROW EXECUTE PROCEDURE set_enum_id();
+
+CREATE TRIGGER mmt_$1_enum_b_u_trg
+    BEFORE UPDATE ON mmt_$1_enum
+    FOR EACH ROW EXECUTE PROCEDURE prevent_enum_update();
+endsnippet
