@@ -5,7 +5,6 @@ ZSH_THEME="bira"
 plugins=()
 
 source $ZSH/oh-my-zsh.sh
-source $HOME/Memento/todos
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh  # fzf
 
 # Variables & Fonctions
