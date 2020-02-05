@@ -12,7 +12,6 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow"
 export EDITOR='vim'
-export PYTHONPATH="$HOME/.local/lib/python3.6/site-packages"
 
 function gi { curl -L -s https://www.gitignore.io/api/$@ ;}
 function loadenv { source <(sed '/^\( \|\t\)*#/d ; /^$/d ; s/^/export /g' $1) }
@@ -22,6 +21,10 @@ function changelog { git log --format='* %s' ${1:-develop}..HEAD }
 function ec2-ls { aws ec2 describe-instances --filters "Name=tag:env,Values=$1" | python3 -c "import json, sys; ec2 = json.loads(sys.stdin.read()); [print(next((t['Value'] for t in i['Tags'] if t['Key'] == 'Name'))  + ': ' +  i.get('PrivateIpAddress', '')) for r in ec2['Reservations'] for i in r['Instances'] if 'PrivateIpAddress' in i]" | sort }
 function ec2-ip { aws ec2 describe-instances --filters "Name=tag:Name,Values=$1" | python3 -c "import json, sys; ec2 = json.loads(sys.stdin.read()); sys.stdout.write(ec2['Reservations'][0]['Instances'][0].get('PrivateIpAddress', ''))" }
 function ec2-ssh { ssh -i ~/.ssh/keys/production-admin.pem ubuntu@$@}
+function gcli { gcloud compute instances list --filter="name~$1"}
+function gssh { gcloud compute ssh --internal-ip $@}
+function timecurl { curl -s -o /dev/null -w "%{time_starttransfer}\n" $@ }
+function bumptag { git tag $1 && git push --tags }
 
 # Aliases
 
@@ -35,7 +38,10 @@ alias minivim='vim -u NONE'
 alias toqrcode='xargs -0 | qrencode -o - | display'
 alias dev='tmux attach -t $(basename $PWD) || tmux new -s $(basename $PWD)'
 alias jsonschema="echo \"$1\" | genson | python3 -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)'"
-export PATH="$PATH:/home/enguerrand/Memento/Code/memento-cli/bin"
+
+# Images functions
+function set_taken_date_to_now { exiv2 -M "set Exif.Photo.DateTimeOriginal $(date +'%Y:%m:%d %H:%M:%S')" $1 }
+function generate_faces { for i in {1..$1} ; do ; curl 'https://thispersondoesnotexist.com/image' -H 'User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -o ./$i.jpg ; done; }
 
 # Git workflows
 alias dev2staging="git checkout develop && git pull --rebase && git submodule update && git checkout staging && git pull --rebase && git rebase develop && git push"
