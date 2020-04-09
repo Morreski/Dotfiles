@@ -268,6 +268,15 @@ let g:prettier#autoformat = 0
 autocmd BufWritePre *.ts Prettier
 autocmd BufWritePre *.html Prettier
 
+" astyle
+function AutoFormatAstyle()
+    silent ! astyle --style=google % &> /dev/null
+    edit
+endfunction
+
+autocmd BufWritePost *.cpp call AutoFormatAstyle()
+
+
 nmap <C-e> :lopen <cr>
 
 " UltiSnips
