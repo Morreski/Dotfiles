@@ -44,3 +44,32 @@ snippet eh_broadcast
           $8:
             type: $9
 endsnippet
+
+snippet eh_db
+- name: on_$1_change
+  triggered_by:
+    name: db/mmt_$1.#
+    schema:
+      type: object
+      required:
+        - old
+        - new
+        - action
+        - sequence_number
+      properties:
+        old:
+          type:
+            - object
+            - "null"
+        new:
+          type:
+            - object
+            - "null"
+        action:
+          type: string
+        sequence_number:
+          type: integer
+
+  fired_events: []
+endsnippet
+

@@ -80,3 +80,16 @@ class $1Event(Event):
             {},
         )
 endsnippet
+
+snippet event_handler_db
+from typing import Generator, Union, Optional
+
+from memento.events import event_handler, Event, Error
+
+
+@event_handler
+def on_$1_change(
+    old: Optional[dict], new: Optional[dict], action: str, sequence_number: int
+) -> Generator[Union[Event, Error], None, None]:
+    print(old, new)
+endsnippet

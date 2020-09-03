@@ -30,3 +30,17 @@ async $4(
     );
 }
 endsnippet
+
+
+snippet ng-component
+import { Component } from '@angular/core'
+
+@Component({
+  selector: '$1',
+  templateUrl: './$1.component.html',
+  styleUrls: ['./$1.component.scss'],
+})
+export class $2 {
+  constructor() {}
+}
+endsnippet
