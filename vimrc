@@ -1,3 +1,4 @@
+
 " Author: Enguerrand Pelletier
 " Derived from Sebastien Bernery's original vimrc file
 "
@@ -10,10 +11,10 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/vundle
 set rtp+=~/.fzf
-set rtp+=~/.vim/bundle/black/plugin/black.vim
 call vundle#rc()
 "
 " " let Vundle manage Vundle, required
@@ -29,10 +30,10 @@ Plugin 'digitaltoad/vim-jade'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'python/black'
 
 " Coloration
 Plugin 'morhetz/gruvbox'
+Plugin 'luochen1990/rainbow'
 
 " Utilities
 "Plugin 'kien/ctrlp.vim'
@@ -44,11 +45,10 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 
 " Syntax checker
-Plugin 'scrooloose/syntastic'
+Plugin 'vim-syntastic/syntastic'
 Plugin 'prettier/vim-prettier'
 
 " Completion
-Plugin 'Shougo/neocomplcache.vim'
 Plugin 'SirVer/ultisnips'
 
 " Recherche
@@ -115,6 +115,8 @@ filetype plugin indent on
 set t_Co=256        " 256 couleurs inside (marche avec gnome-terminal debian)
 
 colorscheme gruvbox
+
+let g:rainbow_active = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Indentation - Gestion des tabs/espaces
@@ -207,10 +209,6 @@ endif
 " Gesture
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Indentation avec les fleches du clavier
-nmap <Left> <<
-nmap <Right> >>
-
 nnoremap <silent> 1 :noh <cr>
 " Navigation en mode insertion
 inoremap <C-e> <C-o>$
@@ -235,24 +233,14 @@ noremap <C-Left> 5<C-w>-
 " Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Black
-
-let g:black_fast=0
-:au BufWritePre *.py :Black
-
-" neocomplcache
-
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
-let g:neocomplcache_min_syntax_length = 3
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Syntastic
 
 let g:syntastic_python_checkers = [ 'pyflakes', 'python3'  ]
 " let g:syntastic_javascript_checkers = [ 'eslint']
-let g:syntastic_rust_checkers = ['rustc']
 
+let g:rustfmt_autosave = 1
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
@@ -276,6 +264,13 @@ endfunction
 
 autocmd BufWritePost *.cpp call AutoFormatAstyle()
 
+" black
+function AutoFormatBlack()
+    silent ! black % &> /dev/null
+    edit
+endfunction
+
+:au BufWritePost *.py call AutoFormatBlack()
 
 nmap <C-e> :lopen <cr>
 
@@ -283,9 +278,9 @@ nmap <C-e> :lopen <cr>
 
 let g:UltiSnipsExpandTrigger = '<S-Tab>'
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsListSnippets='<c-tab>'
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/morreski_snippets']
-let g:UltiSnipsJumpForwardTrigger='<Tab>'
+let g:UltiSnipsJumpForwardTrigger='<right>'
+let g:UltiSnipsJumpBackwardTrigger='<left>'
 
 " vim-multiple-cursors
 
@@ -328,8 +323,6 @@ command Light execute "set background=light | hi Normal ctermbg=None | SetHighli
 " Et que des fois, y'en a pas
 command Dark execute "set background=dark | hi Normal ctermbg=None | SetHighlight"
 
-" Et que souvent, y'en a pas
-Dark
 
 " Browser
 let g:netrw_banner = 0
@@ -355,7 +348,8 @@ function! ToggleNetrw()
     endif
 endfunction
 
-noremap <leader><Space> :call ToggleNetrw()<CR>
-
 " Trigger changes every X ms
 set updatetime=100
+
+Dark
+"Light
