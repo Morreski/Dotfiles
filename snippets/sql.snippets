@@ -3,7 +3,7 @@ id SERIAL NOT NULL PRIMARY KEY,
 endsnippet
 
 snippet fk
-$1_id integer NOT NULL REFERENCES mmt_$1 NOT DEFERRABLE INITIALLY IMMEDIATE,
+$1_id INTEGER NOT NULL REFERENCES mmt_$1 NOT DEFERRABLE INITIALLY IMMEDIATE,
 endsnippet
 
 snippet setupdatedat
@@ -67,17 +67,17 @@ CREATE TRIGGER mmt_$1_b_u_trg
 endsnippet
 
 snippet enum
-CREATE TABLE mmt_$1_enum (
+CREATE TABLE $1 (
     id BIGINT NOT NULL PRIMARY KEY,
     label TEXT NOT NULL UNIQUE,
     description TEXT NOT NULL
 );
 
-CREATE TRIGGER mmt_$1_enum_b_i_trg
-    BEFORE INSERT ON mmt_$1_enum
+CREATE TRIGGER $1_b_i_trg
+    BEFORE INSERT ON $1
     FOR EACH ROW EXECUTE PROCEDURE set_enum_id();
 
-CREATE TRIGGER mmt_$1_enum_b_u_trg
-    BEFORE UPDATE ON mmt_$1_enum
+CREATE TRIGGER $1_b_u_trg
+    BEFORE UPDATE ON $1
     FOR EACH ROW EXECUTE PROCEDURE prevent_enum_update();
 endsnippet

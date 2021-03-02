@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ ! $# -eq 2 ]
+then
+    echo "Usage: $0 PALLETTENAME COLORNAME"
+    exit 1
+fi
+
+declare -A colors
+
+colors=(
+    [MEMENTO_BLUE]="#2c2058"
+    [MEMENTO_LIGHTBLUE]="#7c6cf3"
+    [MEMENTO_GREEN]="#45eab6"
+    [MEMENTO_GRAY]="#5c6269"
+    [MEMENTO_PINK]="#ff6466"
+    [GRUVBOX_BLUE]="#458588"
+    [GRUVBOX_YELLOW]="#d79921"
+)
+HIT=${colors["${1^^*}_${2^^*}"]}
+if [ -z "$HIT" ]
+then
+    >&2 echo "not found :("
+    exit 1
+fi
+
+echo $HIT

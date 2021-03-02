@@ -93,3 +93,10 @@ def on_$1_change(
 ) -> Generator[Union[Event, Error], None, None]:
     print(old, new)
 endsnippet
+
+snippet http_handler
+@sdecl.$1("$2")
+class HTTP$3:
+    async def __call__(self):
+        $4
+endsnippet

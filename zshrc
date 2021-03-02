@@ -25,6 +25,8 @@ function gcli { gcloud compute instances list --filter="name~$1"}
 function gssh { gcloud compute ssh --internal-ip $@}
 function timecurl { curl -s -o /dev/null -w "%{time_starttransfer}\n" $@ }
 function bumptag { git tag $1 && git push --tags }
+function quicknote { vim ~/Documents/notes/$(date --iso-8601).md }
+function gen_mac_addr { openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//' }
 
 # Aliases
 
@@ -43,7 +45,14 @@ alias jsonschema="echo \"$1\" | genson | python3 -c 'import sys, yaml, json; yam
 function set_taken_date_to_now { exiv2 -M "set Exif.Photo.DateTimeOriginal $(date +'%Y:%m:%d %H:%M:%S')" $1 }
 function generate_faces { for i in {1..$1} ; do ; curl 'https://thispersondoesnotexist.com/image' -H 'User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:66.0) Gecko/20100101 Firefox/66.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -o ./$i.jpg ; done; }
 
+# Web dev functions
+function dumpsite { wget -e robots=off -E -H -k -K -p $1 }
+
+# Emojis
+function emoji { EMPATH=$HOME/.local/share/emojis/emojis.txt; if [ ! -f $EMPATH ] ; then ; mkdir -p $(dirname $EMPATH) && wget -O $EMPATH https://unicode.org/Public/emoji/13.1/emoji-test.txt ; fi ; grep "$1" $EMPATH | awk -F '  +|#|;' '{ if ($4 != "") printf "%s ", substr($4, 1, 2); else if ($5 != "") printf("%s ", substr($5, 1, 2));} END {print ""}' }
+
 # Git workflows
 alias dev2staging="git checkout develop && git pull --rebase && git submodule update && git checkout staging && git pull --rebase && git rebase develop && git push"
 alias dev2master="git checkout develop && git pull --rebase && git submodule update && git checkout staging && git pull --rebase && git rebase develop && git push && git checkout master && git pull --rebase && git rebase staging && git push && git tag | sort --version-sort"
 alias staging2master="git checkout staging && git pull --rebase && git submodule update && git checkout master && git pull --rebase && git rebase staging && git push && git tag | sort --version-sort"
+export PATH="$PATH:/home/enguerrand/Memento/memento-cli/bin"
