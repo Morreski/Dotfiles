@@ -182,7 +182,9 @@ set ignorecase      " La recherche ne tient pas compte de la casse
 set smartcase       " Sauf si la recherche contient des majuscules
 
 " Recherche de fichiers avec fzf
-map <C-p> :Files!<CR>
+map <C-p> :Files<CR>
+map <S-F> :Lines<CR>
+let g:fzf_preview_window = ['up:40%:hidden', 'ctrl-/']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Buffers / Fenêtres / Tabs

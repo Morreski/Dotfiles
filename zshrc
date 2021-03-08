@@ -10,7 +10,7 @@ source $ZSH/oh-my-zsh.sh
 # Variables & Fonctions
 
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
-export FZF_DEFAULT_COMMAND="rg --files --hidden --follow"
+export FZF_DEFAULT_COMMAND="rg --files --hidden -i --follow --iglob '!.git/*'"
 export EDITOR='vim'
 
 function gi { curl -L -s https://www.gitignore.io/api/$@ ;}
@@ -40,6 +40,9 @@ alias minivim='vim -u NONE'
 alias toqrcode='xargs -0 | qrencode -o - | display'
 alias dev='tmux attach -t $(basename $PWD) || tmux new -s $(basename $PWD)'
 alias jsonschema="echo \"$1\" | genson | python3 -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)'"
+
+# Network utils
+function obelix-proxy { ssh -T -N -g -R 0.0.0.0:8080:0.0.0.0:$1 -N obelix }
 
 # Images functions
 function set_taken_date_to_now { exiv2 -M "set Exif.Photo.DateTimeOriginal $(date +'%Y:%m:%d %H:%M:%S')" $1 }
