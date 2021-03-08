@@ -167,6 +167,9 @@ set pastetoggle=<F2>
 " Quitter le mode visual avec confort
 vnoremap v <esc>
 
+" Selection vers clipboard
+vnoremap <S-y> :'<,'>:w ! xclip -selection c<cr><cr>
+
 " Suppression rapide du buffer courant
 nnoremap <leader>q :bd<cr>
 
@@ -183,7 +186,8 @@ set smartcase       " Sauf si la recherche contient des majuscules
 
 " Recherche de fichiers avec fzf
 map <C-p> :Files<CR>
-map <S-F> :Lines<CR>
+nnoremap f :Lines<CR>
+map <S-F> :Rg<CR>
 let g:fzf_preview_window = ['up:40%:hidden', 'ctrl-/']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -308,7 +312,6 @@ command Encrypt execute ":!ansible-vault encrypt %"
 " Écrire le fichier dans le clipboard
 
 command ToClip execute ":w ! xclip -selection c"
-command VToClip execute ":'<,'>w ! xclip -selection c"
 
 " Editer du binaire
 
